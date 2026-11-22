@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Contact</title>
+<style>
+  body{margin:0;font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f3f4f6;color:#1b1d21;
+       display:flex;min-height:100vh;align-items:center;justify-content:center}
+  .card{background:#fff;max-width:460px;width:calc(100% - 32px);padding:30px 28px;border-radius:14px;
+        box-shadow:0 1px 3px rgba(0,0,0,.08),0 10px 28px rgba(0,0,0,.06)}
+  h1{font-size:26px;margin:0 0 16px}
+  p{margin:0 0 14px}
+  label{display:block;font-weight:600;margin:20px 0 6px}
+  input{width:100%;box-sizing:border-box;font:inherit;padding:12px 14px;border:1px solid #c7cad0;border-radius:10px}
+  input:focus{outline:2px solid #1f8f4e;border-color:#1f8f4e}
+  button{margin-top:14px;width:100%;font:inherit;font-weight:600;padding:13px;border:0;border-radius:10px;background:#1f8f4e;color:#fff;cursor:pointer}
+  button[disabled]{opacity:.6}
+  .small{font-size:14px;color:#5d6269;margin:16px 0 0}
+  .msg{font-weight:600;margin-top:14px}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>Contact</h1>
+  <div id="ask">
+    <p>Hi, it's Thor, your buyer from eBay for the 1st Edition bulk.</p>
+    <p>I couldn't send this on eBay as it didn't let me. I can message you on WhatsApp if you'd like to do PayPal Goods and Services instead, to save on fees and do the deal direct.</p>
+    <p>If yes, leave your WhatsApp number below and I'll message you. If not, no worries, we can just do it on eBay.</p>
+    <form id="f">
+      <label for="n">Your WhatsApp number</label>
+      <input id="n" name="n" type="tel" inputmode="tel" autocomplete="tel" placeholder="+1 555 123 4567" required>
+      <button id="b" type="submit">Send</button>
+    </form>
+    <p class="msg" id="err" hidden>That didn't send. Please try again.</p>
+    <p class="small">The number you type goes only to me.</p>
+  </div>
+  <div id="done" hidden>
+    <p class="msg">Thanks. I'll message you on WhatsApp shortly.</p>
+  </div>
+</main>
+<script>
+  const T = "ca2373692420628da0adc31d5886e";
+  const f = document.getElementById("f"), n = document.getElementById("n"), b = document.getElementById("b");
+  f.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const v = n.value.trim();
+    if (v.replace(/[^0-9]/g, "").length < 7) { n.focus(); return; }
+    b.disabled = true; document.getElementById("err").hidden = true;
+    try {
+      const r = await fetch("https://ntfy.sh/" + T, { method: "POST", body: "WhatsApp number: " + v });
+      if (!r.ok) throw new Error(r.status);
+      document.getElementById("ask").hidden = true; document.getElementById("done").hidden = false;
+    } catch (x) { b.disabled = false; document.getElementById("err").hidden = false; }
+  });
+</script>
+</body>
+</html>
